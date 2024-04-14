@@ -34,6 +34,9 @@ namespace Assignment4
             groupBox1 = new GroupBox();
             textIngredients = new TextBox();
             textUpdate = new TextBox();
+            btnAdd = new Button();
+            btnEdit = new Button();
+            btnDel = new Button();
             groupBox1.SuspendLayout();
             SuspendLayout();
             // 
@@ -57,6 +60,9 @@ namespace Assignment4
             // 
             // groupBox1
             // 
+            groupBox1.Controls.Add(btnDel);
+            groupBox1.Controls.Add(btnEdit);
+            groupBox1.Controls.Add(btnAdd);
             groupBox1.Controls.Add(textIngredients);
             groupBox1.Controls.Add(textUpdate);
             groupBox1.Location = new Point(32, 58);
@@ -82,6 +88,36 @@ namespace Assignment4
             textUpdate.Size = new Size(403, 38);
             textUpdate.TabIndex = 0;
             // 
+            // btnAdd
+            // 
+            btnAdd.BackColor = SystemColors.ScrollBar;
+            btnAdd.Location = new Point(430, 39);
+            btnAdd.Name = "btnAdd";
+            btnAdd.Size = new Size(77, 39);
+            btnAdd.TabIndex = 2;
+            btnAdd.Text = "Add";
+            btnAdd.UseVisualStyleBackColor = false;
+            // 
+            // btnEdit
+            // 
+            btnEdit.BackColor = SystemColors.ScrollBar;
+            btnEdit.Location = new Point(430, 94);
+            btnEdit.Name = "btnEdit";
+            btnEdit.Size = new Size(77, 39);
+            btnEdit.TabIndex = 3;
+            btnEdit.Text = "Edit";
+            btnEdit.UseVisualStyleBackColor = false;
+            // 
+            // btnDel
+            // 
+            btnDel.BackColor = SystemColors.ScrollBar;
+            btnDel.Location = new Point(430, 148);
+            btnDel.Name = "btnDel";
+            btnDel.Size = new Size(77, 39);
+            btnDel.TabIndex = 4;
+            btnDel.Text = "Delete";
+            btnDel.UseVisualStyleBackColor = false;
+            // 
             // FormIngredients
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
@@ -106,5 +142,8 @@ namespace Assignment4
         private TextBox textIngredients;
         private TextBox textUpdate;
         private EventHandler FormIngredients_Load;
+        private Button btnDel;
+        private Button btnEdit;
+        private Button btnAdd;
     }
 }

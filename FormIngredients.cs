@@ -8,24 +8,29 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+
 namespace Assignment4
 {
     public partial class FormIngredients : Form
     {
+        private List<string> ingredients = new List<string>();
         private Recipe currRecipe;
 
         public FormIngredients(Recipe recipe)
         {
             InitializeComponent();
-            currRecipe = recipe;
-            numberOutput.Text = currRecipe.Ingredients.Length.ToString();
+            this.currRecipe = recipe;
             DisplayIngredients();
         }
 
+        public List<string> Ingredients
+        {
+            get { return ingredients; }
+        }
         private void DisplayIngredients()
         {
             textIngredients.Clear();
-            foreach (string ingredient in currRecipe.Ingredients)
+            foreach (string ingredient in ingredients)
             {
                 if (!string.IsNullOrEmpty(ingredient))
                 {
@@ -36,19 +41,11 @@ namespace Assignment4
 
         private void BtnIngAdd_Click(object sender, EventArgs e)
         {
-            // Add ingredient to the current recipe
             string newIngredient = textUpdate.Text;
             if (!string.IsNullOrWhiteSpace(newIngredient))
             {
-                try
-                {
-                    currRecipe.AddIngredient(newIngredient);
-                    DisplayIngredients();
-                }
-                catch (InvalidOperationException ex)
-                {
-                    MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
+                ingredients.Add(newIngredient);
+                DisplayIngredients();
             }
             else
             {
@@ -71,14 +68,17 @@ namespace Assignment4
         private void BtnOk_Click(object sender, EventArgs e)
         {
             // Confirm and save changes
-            // Implement logic here...
+            //currRecipe.SetIngredients(Ingredients.ToArray());
+            DialogResult = DialogResult.OK;
+            Close();
         }
 
         private void BtnCancel_Click(object sender, EventArgs e)
         {
             // Cancel and discard changes
-            // Implement logic here...
+            DialogResult = DialogResult.Cancel;
+            Close();
         }
-
     }
 }
+

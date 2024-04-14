@@ -9,58 +9,89 @@ namespace Assignment4
     internal class RecipeManager
 
     {
-        private Recipe[] recipes;
-        private int maxRecipes;
-        private int recipeCount;
+        private Recipe[] recipeList;
+        private int numOfRecipes;
 
-        public RecipeManager(int maxRecipes, int maxIngredientsPerRecipe)
+        public RecipeManager(int maxNumOfRecipes)
         {
-            this.maxRecipes = maxRecipes;
-            this.recipes = new Recipe[maxRecipes];
-            this.MaxIngredientsPerRecipe = maxIngredientsPerRecipe;
+            recipeList = new Recipe[maxNumOfRecipes];
+            numOfRecipes = 0;
         }
 
-        public int MaxIngredientsPerRecipe { get; }
-
-        public void AddRecipe(Recipe recipe)
+        public bool Add(Recipe recipe)
         {
-            if (recipeCount >= maxRecipes)
+            if (numOfRecipes < recipeList.Length)
             {
-                throw new InvalidOperationException("Cannot add more recipes. Maximum limit reached.");
+                recipeList[numOfRecipes] = recipe;
+                numOfRecipes++;
+                return true;
             }
-            recipes[recipeCount++] = recipe;
+            return false;
+        }   
+
+        public bool RemoveRecipeAt(int index)
+        {
+            if (index >= 0 && index < numOfRecipes)
+            {
+                recipeList[index] = null;
+                MoveElementLeft(index);
+                numOfRecipes--;
+                return true;
+            }
+            return false;
         }
 
-        public void RemoveRecipe(Recipe recipe)
+        public bool EditRecipe(int index, Recipe recipe)
         {
-            for (int i = 0; i < recipeCount; i++)
+            if (index >= 0 && index < numOfRecipes)
             {
-                if (recipes[i] == recipe)
+                recipeList[index] = recipe;
+                return true;
+            }
+            return false;
+        }
+
+        public Recipe GetRecipeAt(int index)
+        {
+            if (index >= 0 && index < numOfRecipes)
+            {
+                return recipeList[index];
+            }
+            return null;
+        }
+
+        public int NumOfRecipes()
+        {
+            return numOfRecipes;
+        }
+
+        public void UpdateRecipe(Recipe recipe)
+        {
+            for (int i = 0; i < numOfRecipes; i++)
+            {
+                if (recipeList[i] != null && recipeList[i].Name.Equals(recipe.Name, StringComparison.OrdinalIgnoreCase))
+                    recipeList[i].ClearIngredients();
+                foreach (string ingredient in recipe.GetIngredients())
                 {
-                    recipes[i] = null;
-                    // Shift elements to remove the gap
-                    for (int j = i; j < recipeCount - 1; j++)
+                    if (!string.IsNullOrEmpty(ingredient))
                     {
-                        recipes[j] = recipes[j + 1];
+                        recipeList[i].AddIngredient(ingredient);
                     }
-                    recipes[recipeCount - 1] = null; // Remove the last element
-                    recipeCount--;
-                    return;
                 }
+                break;
             }
-            throw new InvalidOperationException("Recipe not found.");
         }
 
-        public Recipe GetRecipe(int index)
+        private void MoveElementLeft(int index)
         {
-            if (index < 0 || index >= recipeCount)
+            for (int i = index; i < numOfRecipes - 1; i++)
             {
-                throw new IndexOutOfRangeException("Invalid recipe index.");
+                recipeList[i] = recipeList[i + 1];
             }
-            return recipes[index];
+            recipeList[numOfRecipes - 1] = null;
         }
 
-        public int RecipeCount => recipeCount;
-    }
 
+
+    }
 }

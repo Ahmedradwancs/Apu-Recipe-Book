@@ -36,7 +36,6 @@
             label2 = new Label();
             textRecipeName = new TextBox();
             label1 = new Label();
-            text3fields = new TextBox();
             label3 = new Label();
             label4 = new Label();
             label5 = new Label();
@@ -45,6 +44,7 @@
             btnDel = new Button();
             btnClear = new Button();
             textEnd = new Label();
+            listRecipes = new ListBox();
             groupBox1.SuspendLayout();
             SuspendLayout();
             // 
@@ -126,14 +126,6 @@
             label1.TabIndex = 0;
             label1.Text = "Name of recipe";
             // 
-            // text3fields
-            // 
-            text3fields.Location = new Point(499, 66);
-            text3fields.Multiline = true;
-            text3fields.Name = "text3fields";
-            text3fields.Size = new Size(447, 296);
-            text3fields.TabIndex = 1;
-            // 
             // label3
             // 
             label3.AutoSize = true;
@@ -163,7 +155,7 @@
             // btnEditBegin
             // 
             btnEditBegin.BackColor = SystemColors.ScrollBar;
-            btnEditBegin.Location = new Point(499, 375);
+            btnEditBegin.Location = new Point(509, 375);
             btnEditBegin.Name = "btnEditBegin";
             btnEditBegin.Size = new Size(99, 29);
             btnEditBegin.TabIndex = 5;
@@ -173,7 +165,7 @@
             // btnEditFInish
             // 
             btnEditFInish.BackColor = SystemColors.ScrollBar;
-            btnEditFInish.Location = new Point(604, 375);
+            btnEditFInish.Location = new Point(615, 375);
             btnEditFInish.Name = "btnEditFInish";
             btnEditFInish.Size = new Size(107, 29);
             btnEditFInish.TabIndex = 6;
@@ -183,7 +175,7 @@
             // btnDel
             // 
             btnDel.BackColor = SystemColors.ScrollBar;
-            btnDel.Location = new Point(717, 375);
+            btnDel.Location = new Point(729, 375);
             btnDel.Name = "btnDel";
             btnDel.Size = new Size(97, 29);
             btnDel.TabIndex = 7;
@@ -193,7 +185,7 @@
             // btnClear
             // 
             btnClear.BackColor = SystemColors.ScrollBar;
-            btnClear.Location = new Point(829, 375);
+            btnClear.Location = new Point(831, 375);
             btnClear.Name = "btnClear";
             btnClear.Size = new Size(117, 29);
             btnClear.TabIndex = 8;
@@ -207,11 +199,21 @@
             textEnd.Size = new Size(447, 34);
             textEnd.TabIndex = 9;
             // 
+            // listRecipes
+            // 
+            listRecipes.FormattingEnabled = true;
+            listRecipes.Location = new Point(510, 73);
+            listRecipes.Name = "listRecipes";
+            listRecipes.Size = new Size(436, 284);
+            listRecipes.TabIndex = 10;
+            listRecipes.SelectedIndexChanged += listRecipes_SelectedIndexChanged;
+            // 
             // FormMain
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(971, 450);
+            Controls.Add(listRecipes);
             Controls.Add(textEnd);
             Controls.Add(btnClear);
             Controls.Add(btnDel);
@@ -220,7 +222,6 @@
             Controls.Add(label5);
             Controls.Add(label4);
             Controls.Add(label3);
-            Controls.Add(text3fields);
             Controls.Add(groupBox1);
             Name = "FormMain";
             Text = "Apu Recipe book";
@@ -240,7 +241,6 @@
         private TextBox textInstructions;
         private Button btnAddIng;
         private ComboBox comboCategory;
-        private TextBox text3fields;
         private Label label3;
         private Label label4;
         private Label label5;
@@ -249,5 +249,6 @@
         private Button btnDel;
         private Button btnClear;
         private Label textEnd;
+        private ListBox listRecipes;
     }
 }
