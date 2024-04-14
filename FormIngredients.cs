@@ -13,39 +13,50 @@ namespace Assignment4
 {
     public partial class FormIngredients : Form
     {
-        private List<string> ingredients = new List<string>();
+        private string[] ingredients;
+        private int noOfIng;
+        private const int MaxIngredients = 50;
         private Recipe currRecipe;
 
         public FormIngredients(Recipe recipe)
         {
             InitializeComponent();
             this.currRecipe = recipe;
-            DisplayIngredients();
+            ingredients = new string[MaxIngredients];
+            LoadIngredientsFromRecipe();
+            UpdateNumberOfIngredientsLabel();
         }
 
-        public List<string> Ingredients
+        private void LoadIngredientsFromRecipe()
         {
-            get { return ingredients; }
-        }
-        private void DisplayIngredients()
-        {
-            textIngredients.Clear();
-            foreach (string ingredient in ingredients)
+            for (int i = 0; i < currRecipe.IngredientCount(); i++)
             {
-                if (!string.IsNullOrEmpty(ingredient))
+                string ingredient = currRecipe.GetIngredient(i);
+                if (ingredient != null)
                 {
-                    textIngredients.AppendText(ingredient + Environment.NewLine);
+                    ingredients[noOfIng++] = ingredient;
+                    listIngredients.Items.Add(ingredient);
                 }
             }
         }
 
-        private void BtnIngAdd_Click(object sender, EventArgs e)
+        private void BtnAdd_Click(object sender, EventArgs e)
         {
             string newIngredient = textUpdate.Text;
             if (!string.IsNullOrWhiteSpace(newIngredient))
             {
-                ingredients.Add(newIngredient);
-                DisplayIngredients();
+                if (noOfIng < MaxIngredients)
+                {
+                    ingredients[noOfIng++] = newIngredient;
+                    listIngredients.Items.Add(newIngredient);
+                    textUpdate.Clear();
+                    UpdateRecipe();
+                    UpdateNumberOfIngredientsLabel();
+                }
+                else
+                {
+                    MessageBox.Show("Maximum number of ingredients reached.");
+                }
             }
             else
             {
@@ -53,22 +64,71 @@ namespace Assignment4
             }
         }
 
-        private void BtnIngEdit_Click(object sender, EventArgs e)
+        private void btnDel_Click(object sender, EventArgs e)
         {
-            // Edit selected ingredient
-            // Implement logic here...
+            int selectedIndex = listIngredients.SelectedIndex;
+            if (selectedIndex >= 0)
+            {
+                // Shift all elements after the removed item one step to the left
+                for (int i = selectedIndex; i < noOfIng - 1; i++)
+                {
+                    ingredients[i] = ingredients[i + 1];
+                }
+                noOfIng--; // Decrease the ingredient count
+                ingredients[noOfIng] = null; // Clear the last element
+
+                listIngredients.Items.RemoveAt(selectedIndex);
+                textUpdate.Clear();
+                UpdateRecipe();
+                UpdateNumberOfIngredientsLabel();
+            }
+            else
+            {
+                MessageBox.Show("Please select an ingredient to remove.");
+            }
         }
 
-        private void BtnIngDel_Click(object sender, EventArgs e)
+        private void btnEdit_Click(object sender, EventArgs e)
         {
-            // Delete selected ingredient
-            // Implement logic here...
+            int selectedIndex = listIngredients.SelectedIndex;
+            if (selectedIndex >= 0)
+            {
+                textUpdate.Text = listIngredients.SelectedItem.ToString();
+                ingredients[selectedIndex] = null; // Clear the ingredient being edited
+                listIngredients.Items.RemoveAt(selectedIndex);
+                UpdateRecipe();
+                UpdateNumberOfIngredientsLabel();
+            }
+            else
+            {
+                MessageBox.Show("Please select an ingredient to edit.");
+            }
         }
+
+        private void btnClear_Click(object sender, EventArgs e)
+        {
+            Array.Clear(ingredients, 0, ingredients.Length);
+            noOfIng = 0;
+            listIngredients.Items.Clear();
+            UpdateRecipe();
+            UpdateNumberOfIngredientsLabel();
+        }
+
+        private void UpdateRecipe()
+        {
+            if (currRecipe != null)
+            {
+                currRecipe.ClearIngredients();
+                for (int i = 0; i < noOfIng; i++)
+                {
+                    currRecipe.AddIngredient(ingredients[i]);
+                }
+            }
+        }
+
 
         private void BtnOk_Click(object sender, EventArgs e)
         {
-            // Confirm and save changes
-            //currRecipe.SetIngredients(Ingredients.ToArray());
             DialogResult = DialogResult.OK;
             Close();
         }
@@ -79,6 +139,15 @@ namespace Assignment4
             DialogResult = DialogResult.Cancel;
             Close();
         }
+
+        private void UpdateNumberOfIngredientsLabel()
+        {
+            numOfIng.Text = noOfIng.ToString();
+        }
+
+        private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }
-

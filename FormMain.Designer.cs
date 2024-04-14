@@ -202,11 +202,10 @@
             // listRecipes
             // 
             listRecipes.FormattingEnabled = true;
-            listRecipes.Location = new Point(510, 73);
+            listRecipes.Location = new Point(510, 67);
             listRecipes.Name = "listRecipes";
-            listRecipes.Size = new Size(436, 284);
-            listRecipes.TabIndex = 10;
-            listRecipes.SelectedIndexChanged += listRecipes_SelectedIndexChanged;
+            listRecipes.Size = new Size(436, 304);
+            listRecipes.TabIndex = 11;
             // 
             // FormMain
             // 
