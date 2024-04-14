@@ -73,6 +73,7 @@
             btnAddRec.TabIndex = 6;
             btnAddRec.Text = "Add recipe";
             btnAddRec.UseVisualStyleBackColor = false;
+            btnAddRec.Click += btnAddRec_Click;
             // 
             // textInstructions
             // 
@@ -91,6 +92,7 @@
             btnAddIng.TabIndex = 4;
             btnAddIng.Text = "Add Ingredients";
             btnAddIng.UseVisualStyleBackColor = false;
+            btnAddIng.Click += btnAddIng_Click;
             // 
             // comboCategory
             // 
@@ -138,7 +140,7 @@
             // label4
             // 
             label4.AutoSize = true;
-            label4.Location = new Point(693, 28);
+            label4.Location = new Point(671, 28);
             label4.Name = "label4";
             label4.Size = new Size(69, 20);
             label4.TabIndex = 3;
@@ -146,9 +148,9 @@
             // 
             // label5
             // 
-            label5.Location = new Point(850, 17);
+            label5.Location = new Point(784, 28);
             label5.Name = "label5";
-            label5.Size = new Size(96, 46);
+            label5.Size = new Size(143, 35);
             label5.TabIndex = 4;
             label5.Text = "No. of Ingredients";
             // 
@@ -161,6 +163,7 @@
             btnEditBegin.TabIndex = 5;
             btnEditBegin.Text = "Edit-Begin";
             btnEditBegin.UseVisualStyleBackColor = false;
+            btnEditBegin.Click += btnEditBegin_Click_1;
             // 
             // btnEditFInish
             // 
@@ -171,6 +174,7 @@
             btnEditFInish.TabIndex = 6;
             btnEditFInish.Text = "Edit-Finish";
             btnEditFInish.UseVisualStyleBackColor = false;
+            btnEditFInish.Click += btnEditFinish_Click_1;
             // 
             // btnDel
             // 
@@ -181,6 +185,7 @@
             btnDel.TabIndex = 7;
             btnDel.Text = "Delete";
             btnDel.UseVisualStyleBackColor = false;
+            btnDel.Click += btnDel_Click_1;
             // 
             // btnClear
             // 
@@ -191,6 +196,7 @@
             btnClear.TabIndex = 8;
             btnClear.Text = "Clear Selection";
             btnClear.UseVisualStyleBackColor = false;
+            btnClear.Click += btnClear_Click_1;
             // 
             // textEnd
             // 

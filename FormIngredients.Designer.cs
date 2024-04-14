@@ -32,11 +32,13 @@ namespace Assignment4
             labelNumber = new Label();
             numOfIng = new Label();
             groupBox1 = new GroupBox();
+            listIngredients = new ListBox();
             btnDel = new Button();
             btnEdit = new Button();
             btnAdd = new Button();
             textUpdate = new TextBox();
-            listIngredients = new ListBox();
+            btnOk = new Button();
+            btnCancel = new Button();
             groupBox1.SuspendLayout();
             SuspendLayout();
             // 
@@ -48,6 +50,7 @@ namespace Assignment4
             labelNumber.Size = new Size(159, 20);
             labelNumber.TabIndex = 0;
             labelNumber.Text = "Number of ingredients";
+            labelNumber.Click += labelNumber_Click;
             // 
             // numOfIng
             // 
@@ -72,6 +75,15 @@ namespace Assignment4
             groupBox1.TabStop = false;
             groupBox1.Text = "Ingredient";
             // 
+            // listIngredients
+            // 
+            listIngredients.FormattingEnabled = true;
+            listIngredients.Location = new Point(21, 94);
+            listIngredients.Name = "listIngredients";
+            listIngredients.Size = new Size(403, 264);
+            listIngredients.TabIndex = 5;
+            listIngredients.SelectedIndexChanged += listBox1_SelectedIndexChanged;
+            // 
             // btnDel
             // 
             btnDel.BackColor = SystemColors.ScrollBar;
@@ -81,6 +93,7 @@ namespace Assignment4
             btnDel.TabIndex = 4;
             btnDel.Text = "Delete";
             btnDel.UseVisualStyleBackColor = false;
+            btnDel.Click += btnDel_Click_1;
             // 
             // btnEdit
             // 
@@ -91,6 +104,7 @@ namespace Assignment4
             btnEdit.TabIndex = 3;
             btnEdit.Text = "Edit";
             btnEdit.UseVisualStyleBackColor = false;
+            btnEdit.Click += btnEdit_Click_1;
             // 
             // btnAdd
             // 
@@ -101,6 +115,7 @@ namespace Assignment4
             btnAdd.TabIndex = 2;
             btnAdd.Text = "Add";
             btnAdd.UseVisualStyleBackColor = false;
+            btnAdd.Click += btnAdd_Click_1;
             // 
             // textUpdate
             // 
@@ -110,20 +125,35 @@ namespace Assignment4
             textUpdate.Size = new Size(403, 38);
             textUpdate.TabIndex = 0;
             // 
-            // listIngredients
+            // btnOk
             // 
-            listIngredients.FormattingEnabled = true;
-            listIngredients.Location = new Point(21, 94);
-            listIngredients.Name = "listIngredients";
-            listIngredients.Size = new Size(403, 264);
-            listIngredients.TabIndex = 5;
-            listIngredients.SelectedIndexChanged += listBox1_SelectedIndexChanged;
+            btnOk.BackColor = SystemColors.ScrollBar;
+            btnOk.Location = new Point(76, 456);
+            btnOk.Name = "btnOk";
+            btnOk.Size = new Size(139, 38);
+            btnOk.TabIndex = 3;
+            btnOk.Text = "Ok";
+            btnOk.UseVisualStyleBackColor = false;
+            btnOk.Click += btnOk_Click_1;
+            // 
+            // btnCancel
+            // 
+            btnCancel.BackColor = SystemColors.ScrollBar;
+            btnCancel.Location = new Point(267, 456);
+            btnCancel.Name = "btnCancel";
+            btnCancel.Size = new Size(139, 38);
+            btnCancel.TabIndex = 4;
+            btnCancel.Text = "Cancel";
+            btnCancel.UseVisualStyleBackColor = false;
+            btnCancel.Click += btnCancel_Click_1;
             // 
             // FormIngredients
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(584, 506);
+            Controls.Add(btnCancel);
+            Controls.Add(btnOk);
             Controls.Add(groupBox1);
             Controls.Add(numOfIng);
             Controls.Add(labelNumber);
@@ -146,5 +176,7 @@ namespace Assignment4
         private Button btnEdit;
         private Button btnAdd;
         private ListBox listIngredients;
+        private Button btnOk;
+        private Button btnCancel;
     }
 }
