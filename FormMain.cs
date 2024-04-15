@@ -171,10 +171,9 @@ namespace Assignment4
                 if (recipe != null)
                 {
                     // Format the recipe information as a string
-                    string[] recipeInfo = { recipe.Name, recipe.Category.ToString(), recipe.IngredientCount().ToString() };
-
+                    string recipeInfo = recipe.Name.PadRight(35) + recipe.Category.ToString().PadRight(25) + recipe.IngredientCount().ToString();
                     // Add the recipe information to the list box
-                    listRecipes.Items.Add(new ListViewItem(recipeInfo));
+                    listRecipes.Items.Add(recipeInfo);
                 }
             }
 

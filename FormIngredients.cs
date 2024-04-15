@@ -20,7 +20,6 @@ namespace Assignment4
 
         private int selectedIngredientIndex = -1;
 
-        private static FormIngredients formIngredientsInstance;
 
 
         // Modify the constructor to check if an instance already exists
@@ -28,51 +27,30 @@ namespace Assignment4
         {
             InitializeComponent();
 
-            // If an instance already exists, just bring it to the front and return
-            if (formIngredientsInstance != null && !formIngredientsInstance.IsDisposed)
-            {
-                formIngredientsInstance.BringToFront();
-                return;
-            }
+
             this.currRecipe = recipe;
             ingredients = new string[MaxIngredients];
             LoadIngredientsFromRecipe();
             UpdateNumberOfIngredientsLabel();
 
             // Assign the current instance to the static variable
-            formIngredientsInstance = this;
         }
         private void LoadIngredientsFromRecipe()
         {
-
-                // Iterate through each ingredient and add it to the list box
-                for (int i = 0; i < currRecipe.IngredientCount(); i++)
-                {
-                    string ingredient = currRecipe.GetIngredient(i);
-                    if (ingredient != null)
-                    {
-                        ingredients[noOfIng++] = ingredient;
-                        listIngredients.Items.Add(ingredient);
-                    }
-                }
-    
-            
-        }
-
-
-
-
-        /*
-        private void btnClear_Click(object sender, EventArgs e)
-        {
-            Array.Clear(ingredients, 0, ingredients.Length);
+            // Reset noOfIng before loading ingredients
             noOfIng = 0;
-            UpdateRecipe();
-            UpdateNumberOfIngredientsLabel();
+
+            // Iterate through each ingredient and add it to the list box
+            for (int i = 0; i < currRecipe.IngredientCount(); i++)
+            {
+                string ingredient = currRecipe.GetIngredient(i);
+                if (ingredient != null)
+                {
+                    ingredients[noOfIng++] = ingredient;
+                    listIngredients.Items.Add(ingredient);
+                }
+            }
         }
-        */
-
-
 
 
 
@@ -94,6 +72,8 @@ namespace Assignment4
             }
 
         }
+
+        /*
         private void btnAdd_Click_1(object sender, EventArgs e)
         {
             string newIngredient = textUpdate.Text.Trim(); // Trim whitespace
@@ -203,28 +183,132 @@ namespace Assignment4
             DialogResult = DialogResult.OK;
             Close();
         }
+        */
 
-        private void UpdateRecipe()
+        private void btnAdd_Click_1(object sender, EventArgs e)
         {
-            if (currRecipe != null)
+            string newIngredient = textUpdate.Text.Trim(); // Trim whitespace
+            if (!string.IsNullOrWhiteSpace(newIngredient))
             {
-                for (int i = 0; i < noOfIng; i++)
+                if (noOfIng < MaxIngredients)
                 {
-                    string ingredient = ingredients[i];
-                    if (!string.IsNullOrWhiteSpace(ingredient))
+                    // Ensure that ingredients array is initialized
+                    if (ingredients == null)
                     {
-                        currRecipe.AddIngredient(ingredient);
+                        ingredients = new string[MaxIngredients];
+                    }
+
+                    // Check for duplicates
+                    if (!listIngredients.Items.Contains(newIngredient))
+                    {
+                        // Add the ingredient to the array
+                        ingredients[noOfIng] = newIngredient;
+                        noOfIng++; // Increment the count of ingredients
+                        listIngredients.Items.Add(newIngredient);
+                        textUpdate.Clear();
+                        // No need to update recipe here, only update the UI
+                        UpdateNumberOfIngredientsLabel();
+                    }
+                    else
+                    {
+                        MessageBox.Show("Ingredient already exists.");
                     }
                 }
+                else
+                {
+                    MessageBox.Show("Maximum number of ingredients reached.");
+                }
+            }
+            else
+            {
+                MessageBox.Show("Please enter a correct edit to the ingredient.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
+        private void btnEdit_Click_1(object sender, EventArgs e)
+        {
+            if (selectedIngredientIndex >= 0)
+            {
+                string editedIngredient = textUpdate.Text.Trim(); // Trim whitespace
+                if (!string.IsNullOrWhiteSpace(editedIngredient))
+                {
+                    // Check for duplicates
+                    if (!listIngredients.Items.Contains(editedIngredient) || editedIngredient.Equals(listIngredients.SelectedItem.ToString()))
+                    {
+                        ingredients[selectedIngredientIndex] = editedIngredient;
+                        listIngredients.Items[selectedIngredientIndex] = editedIngredient; // Update list item
+                        textUpdate.Clear();
+                        // No need to update recipe here, only update the UI
+                        UpdateNumberOfIngredientsLabel();
+                    }
+                    else
+                    {
+                        MessageBox.Show("Ingredient already exists.");
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Please enter a non-empty ingredient.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+            else
+            {
+                MessageBox.Show("Please select an ingredient to edit.");
+            }
+        }
+
+        private void btnDel_Click_1(object sender, EventArgs e)
+        {
+            int selectedIndex = listIngredients.SelectedIndex;
+            if (selectedIndex >= 0)
+            {
+                // Remove the selected ingredient from the list
+                listIngredients.Items.RemoveAt(selectedIndex);
+                // Shift all elements after the removed item one step to the left
+                for (int i = selectedIndex; i < noOfIng - 1; i++)
+                {
+                    ingredients[i] = ingredients[i + 1];
+                }
+                noOfIng--; // Decrease the ingredient count
+                ingredients[noOfIng] = null; // Clear the last element
+                                             // No need to update recipe here, only update the UI
+                UpdateNumberOfIngredientsLabel();
+            }
+            else
+            {
+                MessageBox.Show("Please select an ingredient to remove.");
+            }
+        }
+
+        private void btnOk_Click_1(object sender, EventArgs e)
+        {
+            // Update the recipe with the current ingredients
+            UpdateRecipe();
+
+            DialogResult = DialogResult.OK;
+            Close();
+        }
+        private void UpdateRecipe()
+        {
+            
+            for (int i = 0; i < noOfIng; i++)
+            {
+                Console.WriteLine(ingredients[i]);
+                string ingredient = ingredients[i];
+                if (!string.IsNullOrWhiteSpace(ingredient))
+                {
+                    currRecipe.AddIngredient(ingredient);
+                }
+            }
+            
+        }
+
 
 
         private void btnCancel_Click_1(object sender, EventArgs e)
         {
             // Cancel and discard changes
             DialogResult = DialogResult.Cancel;
-            formIngredientsInstance = null;
             Close();
         }
 
