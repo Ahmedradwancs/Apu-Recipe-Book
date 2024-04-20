@@ -1,15 +1,22 @@
+using System;
+using System.Windows.Forms;
+
 namespace Assignment4
 {
+    /// <summary>
+    /// Represents the main form of the recipe management application.
+    /// </summary>
     public partial class FormMain : Form
     {
-        const int MaxNumOfElements = 200;
-        const int MaxNumOfIngredients = 50;
+        private const int MaxNumOfElements = 150;
+        private const int MaxNumOfIngredients = 25;
 
         private RecipeManager recipeManager = new RecipeManager(MaxNumOfElements);
-        private Recipe currentRecipe = new Recipe(MaxNumOfIngredients);
+        private Recipe currRecipe = new Recipe(MaxNumOfIngredients);
 
-
-
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FormMain"/> class.
+        /// </summary>
         public FormMain()
         {
             InitializeComponent();
@@ -23,38 +30,49 @@ namespace Assignment4
             comboCategory.DropDownStyle = ComboBoxStyle.DropDownList;
 
             listRecipes.MouseDoubleClick += new MouseEventHandler(listRecipes_MouseDoubleClick);
-
-
         }
 
-      
+        /// <summary>
+        /// Handles the click event of the "Add Recipe" button.
+        /// </summary>
         private void btnAddRec_Click(object sender, EventArgs e)
         {
-            if (currentRecipe.IngredientCount() == 0)
+            if (currRecipe.IngredientCount() == 0)
             {
                 MessageBox.Show("Please add ingredients to the recipe.");
                 return;
             }
 
-            currentRecipe.Name = textRecipeName.Text;
-            currentRecipe.Category = (FoodCategory)comboCategory.SelectedItem;
-            currentRecipe.Description = textInstructions.Text;
+            currRecipe.Name = textRecipeName.Text;
+            currRecipe.Category = (FoodCategory)comboCategory.SelectedItem;
 
+            // Check if instructions are added
+            if (string.IsNullOrEmpty(textInstructions.Text))
+            {
+                MessageBox.Show("Please add instructions to the recipe.");
+                return;
+            }
 
-            bool addedSuccessfully = recipeManager.Add(currentRecipe);
+            currRecipe.Instructions = textInstructions.Text;
+
+            bool addedSuccessfully = recipeManager.Add(currRecipe);
 
             if (addedSuccessfully)
             {
                 UpdateGUI();
-                currentRecipe = new Recipe(MaxNumOfIngredients);
-
+                currRecipe = new Recipe(MaxNumOfIngredients);
+                ClearForm();
             }
             else
             {
-                MessageBox.Show("Failed to add recipe. The recipe book may be full.");
+                MessageBox.Show("Failed to add recipe. The recipe book is full or an error occurred.");
             }
         }
 
+
+        /// <summary>
+        /// Handles the click event of the "Add Ingredients" button.
+        /// </summary>
         private void btnAddIng_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrWhiteSpace(textRecipeName.Text) || comboCategory.SelectedIndex == -1)
@@ -63,49 +81,56 @@ namespace Assignment4
                 return;
             }
 
-            FormIngredients formIngredients = new FormIngredients(currentRecipe);
-
+            FormIngredients formIngredients = new FormIngredients(currRecipe);
             formIngredients.Text = textRecipeName.Text + " + add ingredients";
-
             formIngredients.ShowDialog();
-
             UpdateGUI();
-
-
         }
 
-
+        /// <summary>
+        /// Handles the click event of the "Begin Edit" button.
+        /// </summary>
         private void btnEditBegin_Click(object sender, EventArgs e)
         {
             if (listRecipes.SelectedItem != null)
             {
                 int index = listRecipes.SelectedIndex;
-                currentRecipe = recipeManager.GetRecipeAt(index);
+                currRecipe = recipeManager.GetRecipeAt(index);
 
-                textRecipeName.Text = currentRecipe.Name;
-                comboCategory.SelectedItem = currentRecipe.Category;
-                textInstructions.Text = currentRecipe.Description;
+                textRecipeName.Text = currRecipe.Name;
+                comboCategory.SelectedItem = currRecipe.Category;
+                textInstructions.Text = currRecipe.Instructions;
+            }
+            else
+            {
+                MessageBox.Show("Please select a recipe to edit.");
             }
         }
 
- 
+        /// <summary>
+        /// Handles the click event of the "Finish Edit" button.
+        /// </summary>
         private void btnEditFinish_Click(object sender, EventArgs e)
         {
             if (listRecipes.SelectedItem != null)
             {
                 int index = listRecipes.SelectedIndex;
 
-                currentRecipe.Name = textRecipeName.Text;
-                currentRecipe.Category = (FoodCategory)comboCategory.SelectedItem;
-                currentRecipe.Description = textInstructions.Text;
+                currRecipe.Name = textRecipeName.Text;
+                currRecipe.Category = (FoodCategory)comboCategory.SelectedItem;
+                currRecipe.Instructions = textInstructions.Text;
 
-                recipeManager.ChangeElement(index, currentRecipe);
+                recipeManager.ChangeElement(index, currRecipe);
 
                 UpdateGUI();
+                ClearForm();
             }
+
         }
 
-
+        /// <summary>
+        /// Handles the click event of the "Delete" button.
+        /// </summary>
         private void btnDel_Click(object sender, EventArgs e)
         {
             if (listRecipes.SelectedItem != null)
@@ -114,34 +139,44 @@ namespace Assignment4
                 recipeManager.DeleteElement(index);
                 UpdateGUI();
             }
+            else
+            {
+                MessageBox.Show("Please select a recipe to delete.");
+            }
         }
 
-
+        /// <summary>
+        /// Handles the click event of the "Clear" button.
+        /// </summary>
         private void btnClear_Click(object sender, EventArgs e)
         {
             ClearForm();
         }
 
-
-
+        /// <summary>
+        /// Updates the GUI with the recipes.
+        /// </summary>
         private void UpdateGUI()
         {
             listRecipes.Items.Clear();
-           
+
             foreach (string recipeSummary in recipeManager.RecipeListToString())
             {
                 listRecipes.Items.Add(recipeSummary);
             }
         }
 
-
+        /// <summary>
+        /// Handles the double-click event of the recipe list.
+        /// </summary>
         private void listRecipes_MouseDoubleClick(object sender, EventArgs e)
         {
             ViewSelectedRecipeDetails();
-
         }
 
-
+        /// <summary>
+        /// Displays the details of the selected recipe.
+        /// </summary>
         private void ViewSelectedRecipeDetails()
         {
             int selectedIndex = listRecipes.SelectedIndex;
@@ -150,10 +185,9 @@ namespace Assignment4
                 Recipe selectedRecipe = recipeManager.GetRecipeAt(selectedIndex);
 
                 string ingredients = selectedRecipe.GetIngredientsAsString();
-                string description = selectedRecipe.Description;
+                string instructions = selectedRecipe.Instructions;
 
-
-                MessageBox.Show($"INGREDIENTS:\n {ingredients}\n\n {description}", "Cooking Instructions", MessageBoxButtons.OK);
+                MessageBox.Show($"INGREDIENTS:\n {ingredients}\n\n {instructions}", "Cooking Instructions:", MessageBoxButtons.OK);
             }
             else
             {
@@ -161,8 +195,9 @@ namespace Assignment4
             }
         }
 
-
-
+        /// <summary>
+        /// Clears the form fields.
+        /// </summary>
         private void ClearForm()
         {
             textRecipeName.Clear();
@@ -171,9 +206,6 @@ namespace Assignment4
             listRecipes.ClearSelected();
         }
 
-        private void FormMain_Load(object sender, EventArgs e)
-        {
-           
-        }
+
     }
 }

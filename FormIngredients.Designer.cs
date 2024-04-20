@@ -169,7 +169,6 @@ namespace Assignment4
         private Label numOfIng;
         private GroupBox groupBox1;
         private TextBox textUpdate;
-        private EventHandler FormIngredients_Load;
         private Button btnDel;
         private Button btnEdit;
         private Button btnAdd;

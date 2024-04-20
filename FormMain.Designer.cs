@@ -43,13 +43,15 @@
             btnEditFInish = new Button();
             btnDel = new Button();
             btnClear = new Button();
-            textEnd = new Label();
+            textInfo = new Label();
             listRecipes = new ListBox();
+            labelInstructions = new Label();
             groupBox1.SuspendLayout();
             SuspendLayout();
             // 
             // groupBox1
             // 
+            groupBox1.Controls.Add(labelInstructions);
             groupBox1.Controls.Add(btnAddRec);
             groupBox1.Controls.Add(textInstructions);
             groupBox1.Controls.Add(btnAddIng);
@@ -77,10 +79,10 @@
             // 
             // textInstructions
             // 
-            textInstructions.Location = new Point(13, 122);
+            textInstructions.Location = new Point(13, 140);
             textInstructions.Multiline = true;
             textInstructions.Name = "textInstructions";
-            textInstructions.Size = new Size(452, 235);
+            textInstructions.Size = new Size(452, 217);
             textInstructions.TabIndex = 5;
             // 
             // btnAddIng
@@ -198,12 +200,14 @@
             btnClear.UseVisualStyleBackColor = false;
             btnClear.Click += btnClear_Click;
             // 
-            // textEnd
+            // textInfo
             // 
-            textEnd.Location = new Point(499, 407);
-            textEnd.Name = "textEnd";
-            textEnd.Size = new Size(447, 34);
-            textEnd.TabIndex = 9;
+            textInfo.ForeColor = Color.Blue;
+            textInfo.Location = new Point(509, 407);
+            textInfo.Name = "textInfo";
+            textInfo.Size = new Size(447, 34);
+            textInfo.TabIndex = 9;
+            textInfo.Text = "Double click on an item to view ingredients - cooking instructions";
             // 
             // listRecipes
             // 
@@ -213,13 +217,22 @@
             listRecipes.Size = new Size(436, 304);
             listRecipes.TabIndex = 11;
             // 
+            // labelInstructions
+            // 
+            labelInstructions.AutoSize = true;
+            labelInstructions.Location = new Point(14, 119);
+            labelInstructions.Name = "labelInstructions";
+            labelInstructions.Size = new Size(146, 20);
+            labelInstructions.TabIndex = 7;
+            labelInstructions.Text = "Cooking Instructions:";
+            // 
             // FormMain
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(971, 450);
             Controls.Add(listRecipes);
-            Controls.Add(textEnd);
+            Controls.Add(textInfo);
             Controls.Add(btnClear);
             Controls.Add(btnDel);
             Controls.Add(btnEditFInish);
@@ -230,8 +243,7 @@
             Controls.Add(groupBox1);
             Font = new Font("Segoe UI", 9F);
             Name = "FormMain";
-            Text = "Apu Recipe book";
-            Load += FormMain_Load;
+            Text = "Apu Recipe book by Ahmed";
             groupBox1.ResumeLayout(false);
             groupBox1.PerformLayout();
             ResumeLayout(false);
@@ -255,7 +267,8 @@
         private Button btnEditFInish;
         private Button btnDel;
         private Button btnClear;
-        private Label textEnd;
+        private Label textInfo;
         private ListBox listRecipes;
+        private Label labelInstructions;
     }
 }

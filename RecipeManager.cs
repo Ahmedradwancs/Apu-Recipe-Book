@@ -4,19 +4,30 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
 namespace Assignment4
 {
+    /// <summary>
+    /// Manages a collection of recipes.
+    /// </summary>
     public class RecipeManager
     {
         private Recipe[] recipeList;
 
-
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RecipeManager"/> class with a maximum number of elements.
+        /// </summary>
+        /// <param name="maxNumOfElements">The maximum number of elements the recipe manager can hold.</param>
         public RecipeManager(int maxNumOfElements)
         {
             recipeList = new Recipe[maxNumOfElements];
         }
 
-
+        /// <summary>
+        /// Adds a recipe to the recipe manager.
+        /// </summary>
+        /// <param name="recipe">The recipe to add.</param>
+        /// <returns>True if the recipe was added successfully; otherwise, false.</returns>
         public bool Add(Recipe recipe)
         {
             int index = FindVacantPosition();
@@ -26,7 +37,13 @@ namespace Assignment4
             return true;
         }
 
-
+        /// <summary>
+        /// Adds a recipe to the recipe manager with specified name, category, and ingredients.
+        /// </summary>
+        /// <param name="name">The name of the recipe.</param>
+        /// <param name="category">The category of the recipe.</param>
+        /// <param name="ingredients">The ingredients of the recipe.</param>
+        /// <returns>True if the recipe was added successfully; otherwise, false.</returns>
         public bool Add(string name, FoodCategory category, string[] ingredients)
         {
             int index = FindVacantPosition();
@@ -48,7 +65,11 @@ namespace Assignment4
             return true;
         }
 
-
+        /// <summary>
+        /// Changes the recipe at the specified index.
+        /// </summary>
+        /// <param name="index">The index of the recipe to change.</param>
+        /// <param name="recipe">The new recipe.</param>
         public void ChangeElement(int index, Recipe recipe)
         {
             if (CheckIndex(index))
@@ -57,13 +78,20 @@ namespace Assignment4
             }
         }
 
-
+        /// <summary>
+        /// Checks if the given index is within the valid range of recipes.
+        /// </summary>
+        /// <param name="index">The index to check.</param>
+        /// <returns>True if the index is valid; otherwise, false.</returns>
         public bool CheckIndex(int index)
         {
             return index >= 0 && index < recipeList.Length;
         }
 
-
+        /// <summary>
+        /// Deletes the recipe at the specified index.
+        /// </summary>
+        /// <param name="index">The index of the recipe to delete.</param>
         public void DeleteElement(int index)
         {
             if (CheckIndex(index))
@@ -73,7 +101,10 @@ namespace Assignment4
             }
         }
 
-
+        /// <summary>
+        /// Finds the index of the first vacant position in the recipe list.
+        /// </summary>
+        /// <returns>The index of the first vacant position, or -1 if no vacant position is found.</returns>
         public int FindVacantPosition()
         {
             for (int i = 0; i < recipeList.Length; i++)
@@ -86,7 +117,10 @@ namespace Assignment4
             return -1;
         }
 
-
+        /// <summary>
+        /// Gets the current number of recipes in the recipe manager.
+        /// </summary>
+        /// <returns>The current number of recipes.</returns>
         public int GetCurrentNumberOfRecipes()
         {
             int count = 0;
@@ -97,7 +131,11 @@ namespace Assignment4
             return count;
         }
 
-
+        /// <summary>
+        /// Gets the recipe at the specified index.
+        /// </summary>
+        /// <param name="index">The index of the recipe to retrieve.</param>
+        /// <returns>The recipe at the specified index.</returns>
         public Recipe GetRecipeAt(int index)
         {
             if (CheckIndex(index))
@@ -106,7 +144,6 @@ namespace Assignment4
             }
             return null;
         }
-
 
         private void MoveElementsOneStepToLeft(int index)
         {
@@ -120,8 +157,10 @@ namespace Assignment4
             }
         }
 
-
-
+        /// <summary>
+        /// Converts the list of recipes to an array of strings.
+        /// </summary>
+        /// <returns>An array of strings representing the recipes.</returns>
         public string[] RecipeListToString()
         {
             string[] recipeStrings = new string[GetCurrentNumberOfRecipes()];
@@ -136,5 +175,4 @@ namespace Assignment4
             return recipeStrings;
         }
     }
-
 }
