@@ -50,7 +50,6 @@ namespace Assignment4
             labelNumber.Size = new Size(159, 20);
             labelNumber.TabIndex = 0;
             labelNumber.Text = "Number of ingredients";
-            labelNumber.Click += labelNumber_Click;
             // 
             // numOfIng
             // 
@@ -82,7 +81,6 @@ namespace Assignment4
             listIngredients.Name = "listIngredients";
             listIngredients.Size = new Size(403, 264);
             listIngredients.TabIndex = 5;
-            listIngredients.SelectedIndexChanged += listBox1_SelectedIndexChanged;
             // 
             // btnDel
             // 

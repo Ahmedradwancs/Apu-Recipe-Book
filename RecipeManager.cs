@@ -6,92 +6,135 @@ using System.Threading.Tasks;
 
 namespace Assignment4
 {
-    internal class RecipeManager
-
+    public class RecipeManager
     {
         private Recipe[] recipeList;
-        private int numOfRecipes;
 
-        public RecipeManager(int maxNumOfRecipes)
+
+        public RecipeManager(int maxNumOfElements)
         {
-            recipeList = new Recipe[maxNumOfRecipes];
-            numOfRecipes = 0;
+            recipeList = new Recipe[maxNumOfElements];
         }
+
 
         public bool Add(Recipe recipe)
         {
-            if (numOfRecipes < recipeList.Length)
-            {
-                recipeList[numOfRecipes] = recipe;
-                numOfRecipes++;
-                return true;
-            }
-            return false;
-        }   
+            int index = FindVacantPosition();
+            if (index == -1) return false;
 
-        public bool RemoveRecipeAt(int index)
-        {
-            if (index >= 0 && index < numOfRecipes)
-            {
-                recipeList[index] = null;
-                MoveElementLeft(index);
-                numOfRecipes--;
-                return true;
-            }
-            return false;
+            recipeList[index] = recipe;
+            return true;
         }
 
-        public bool EditRecipe(int index, Recipe recipe)
+
+        public bool Add(string name, FoodCategory category, string[] ingredients)
         {
-            if (index >= 0 && index < numOfRecipes)
+            int index = FindVacantPosition();
+            if (index == -1) return false;
+
+            Recipe recipe = new Recipe(GetCurrentNumberOfRecipes());
+            recipe.Name = name;
+            recipe.Category = category;
+
+            foreach (string ingredient in ingredients)
+            {
+                if (!recipe.AddIngredient(ingredient))
+                {
+                    break;
+                }
+            }
+
+            recipeList[index] = recipe;
+            return true;
+        }
+
+
+        public void ChangeElement(int index, Recipe recipe)
+        {
+            if (CheckIndex(index))
             {
                 recipeList[index] = recipe;
-                return true;
             }
-            return false;
         }
+
+
+        public bool CheckIndex(int index)
+        {
+            return index >= 0 && index < recipeList.Length;
+        }
+
+
+        public void DeleteElement(int index)
+        {
+            if (CheckIndex(index))
+            {
+                recipeList[index] = null;
+                MoveElementsOneStepToLeft(index);
+            }
+        }
+
+
+        public int FindVacantPosition()
+        {
+            for (int i = 0; i < recipeList.Length; i++)
+            {
+                if (recipeList[i] == null)
+                {
+                    return i;
+                }
+            }
+            return -1;
+        }
+
+
+        public int GetCurrentNumberOfRecipes()
+        {
+            int count = 0;
+            foreach (var recipe in recipeList)
+            {
+                if (recipe != null) count++;
+            }
+            return count;
+        }
+
 
         public Recipe GetRecipeAt(int index)
         {
-            if (index >= 0 && index < numOfRecipes)
+            if (CheckIndex(index))
             {
                 return recipeList[index];
             }
             return null;
         }
 
-        public int NumOfRecipes()
-        {
-            return numOfRecipes;
-        }
 
-        public void UpdateRecipe(Recipe recipe)
+        private void MoveElementsOneStepToLeft(int index)
         {
-            for (int i = 0; i < numOfRecipes; i++)
-            {
-                if (recipeList[i] != null && recipeList[i].Name.Equals(recipe.Name, StringComparison.OrdinalIgnoreCase))
-                    recipeList[i].ClearIngredients();
-                foreach (string ingredient in recipe.GetIngredients())
-                {
-                    if (!string.IsNullOrEmpty(ingredient))
-                    {
-                        recipeList[i].AddIngredient(ingredient);
-                    }
-                }
-                break;
-            }
-        }
-
-        private void MoveElementLeft(int index)
-        {
-            for (int i = index; i < numOfRecipes - 1; i++)
+            for (int i = index; i < recipeList.Length - 1; i++)
             {
                 recipeList[i] = recipeList[i + 1];
             }
-            recipeList[numOfRecipes - 1] = null;
+            if (recipeList.Length > 0)
+            {
+                recipeList[recipeList.Length - 1] = null;
+            }
         }
 
 
 
+        public string[] RecipeListToString()
+        {
+            string[] recipeStrings = new string[GetCurrentNumberOfRecipes()];
+            int counter = 0;
+            foreach (var recipe in recipeList)
+            {
+                if (recipe != null)
+                {
+                    recipeStrings[counter++] = recipe.ToString();
+                }
+            }
+            return recipeStrings;
+        }
     }
+
 }

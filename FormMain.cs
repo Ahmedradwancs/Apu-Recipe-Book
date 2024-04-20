@@ -2,10 +2,13 @@ namespace Assignment4
 {
     public partial class FormMain : Form
     {
-        private RecipeManager recipeManager;
-        private Recipe currRecipe;
+        const int MaxNumOfElements = 200;
         const int MaxNumOfIngredients = 50;
-        const int MaxNumOfRecipes = 200;
+
+        private RecipeManager recipeManager = new RecipeManager(MaxNumOfElements);
+        private Recipe currentRecipe = new Recipe(MaxNumOfIngredients);
+
+
 
         public FormMain()
         {
@@ -17,334 +20,160 @@ namespace Assignment4
             }
 
             comboCategory.SelectedIndex = 0;
-            comboCategory.DropDownStyle = ComboBoxStyle.DropDownList; // Making ComboBox read-only
+            comboCategory.DropDownStyle = ComboBoxStyle.DropDownList;
 
-            recipeManager = new RecipeManager(MaxNumOfRecipes);
+            listRecipes.MouseDoubleClick += new MouseEventHandler(listRecipes_MouseDoubleClick);
 
-            UpdateGUI();
-
-            //btnAddIng.Click += new EventHandler(btnAddIng_Click);
 
         }
 
-        private void UpdateGUI()
-        {
-            // Clear the list box
-            listRecipes.Items.Clear();
-
-            //clear input fields
-            textRecipeName.Clear();
-            textInstructions.Clear();
-            comboCategory.SelectedIndex = 0;
-            /*
-            // This code adds a default item to the list box, you might not need it
-            string defaultItem = "Name".PadRight(30) + "Category".PadRight(25) + "Number of Ingredients";
-            listRecipes.Items.Add(defaultItem);
-            */
-            // Loop through the recipes and add them to the list box
-            int numOfRecipes = recipeManager.NumOfRecipes();
-            for (int i = 0; i < numOfRecipes; i++)
-            {
-                Recipe recipe = recipeManager.GetRecipeAt(i);
-                if (recipe != null)
-                {
-                    // Format the recipe information as a string
-                    string recipeInfo = recipe.Name.PadRight(35) + recipe.Category.ToString().PadRight(25) + recipe.IngredientCount().ToString();
-
-                    // Add the formatted string to the list box
-                    listRecipes.Items.Add(recipeInfo);
-                }
-            }
-        }
-
-
-
-
+      
         private void btnAddRec_Click(object sender, EventArgs e)
         {
-            string recipeName = textRecipeName.Text;
-            string recipeDescription = textInstructions.Text;
-
-            // Check if name and description are provided
-            if (string.IsNullOrWhiteSpace(recipeName))
-            {
-                MessageBox.Show("Name cannot be empty.");
-                return;
-            }
-
-            if (string.IsNullOrWhiteSpace(recipeDescription))
-            {
-                MessageBox.Show("Description cannot be empty.");
-                return;
-            }
-
-            // Check if ingredients are provided
-            if (currRecipe == null || currRecipe.IngredientCount() == 0)
+            if (currentRecipe.IngredientCount() == 0)
             {
                 MessageBox.Show("Please add ingredients to the recipe.");
                 return;
             }
 
-            // Create a new recipe instance
-            currRecipe = new Recipe(MaxNumOfIngredients);
-            currRecipe.Name = recipeName;
-            currRecipe.Description = recipeDescription;
-            currRecipe.Category = (FoodCategory)comboCategory.SelectedItem;
+            currentRecipe.Name = textRecipeName.Text;
+            currentRecipe.Category = (FoodCategory)comboCategory.SelectedItem;
+            currentRecipe.Description = textInstructions.Text;
 
-            // Attempt to add the recipe to the recipe manager
-            bool wasAdded = recipeManager.Add(currRecipe);
 
-            // Check if the recipe was added successfully
-            if (wasAdded)
+            bool addedSuccessfully = recipeManager.Add(currentRecipe);
+
+            if (addedSuccessfully)
             {
-                Console.WriteLine("Recipe added successfully.");
-                MessageBox.Show("Recipe added successfully.");
+                UpdateGUI();
+                currentRecipe = new Recipe(MaxNumOfIngredients);
 
-                UpdateListBox();
             }
             else
             {
-                Console.WriteLine("Unable to add recipe. Maximum capacity reached.");
-                MessageBox.Show("Unable to add recipe. Maximum capacity reached.");
+                MessageBox.Show("Failed to add recipe. The recipe book may be full.");
             }
-            UpdateGUI();
         }
-
-
 
         private void btnAddIng_Click(object sender, EventArgs e)
         {
-            // Check if there is a selected recipe in the list box
-            if (listRecipes.SelectedIndices.Count == 0 && string.IsNullOrWhiteSpace(textRecipeName.Text))
+            if (string.IsNullOrWhiteSpace(textRecipeName.Text) || comboCategory.SelectedIndex == -1)
             {
-                MessageBox.Show("Please select a recipe or create a new one first.");
+                MessageBox.Show("Please enter a name and select a category for the recipe.");
                 return;
             }
 
-            // If a recipe is selected from the list
-            if (listRecipes.SelectedIndices.Count > 0)
-            {
-                // Get the index of the selected recipe
-                int selectedIndex = listRecipes.SelectedIndex;
+            FormIngredients formIngredients = new FormIngredients(currentRecipe);
 
-                // Get the selected recipe
-                currRecipe = recipeManager.GetRecipeAt(selectedIndex);
+            formIngredients.Text = textRecipeName.Text + " + add ingredients";
+
+            formIngredients.ShowDialog();
+
+            UpdateGUI();
+
+
+        }
+
+
+        private void btnEditBegin_Click(object sender, EventArgs e)
+        {
+            if (listRecipes.SelectedItem != null)
+            {
+                int index = listRecipes.SelectedIndex;
+                currentRecipe = recipeManager.GetRecipeAt(index);
+
+                textRecipeName.Text = currentRecipe.Name;
+                comboCategory.SelectedItem = currentRecipe.Category;
+                textInstructions.Text = currentRecipe.Description;
             }
-            // If a new recipe is being created
-            else if (!string.IsNullOrWhiteSpace(textRecipeName.Text))
+        }
+
+ 
+        private void btnEditFinish_Click(object sender, EventArgs e)
+        {
+            if (listRecipes.SelectedItem != null)
             {
-                // Create a new recipe instance
-                currRecipe = new Recipe(MaxNumOfIngredients);
+                int index = listRecipes.SelectedIndex;
 
-                // Set the name of the new recipe
-                currRecipe.Name = textRecipeName.Text;
+                currentRecipe.Name = textRecipeName.Text;
+                currentRecipe.Category = (FoodCategory)comboCategory.SelectedItem;
+                currentRecipe.Description = textInstructions.Text;
 
-                // Optionally, you can set other properties of the new recipe here
-            }
+                recipeManager.ChangeElement(index, currentRecipe);
 
-            // Create a new instance of FormIngredients with the current recipe
-            FormIngredients formIngredients = new FormIngredients(currRecipe);
-
-            // Show the FormIngredients form
-            DialogResult result = formIngredients.ShowDialog();
-
-            // Handle the result if needed
-            if (result == DialogResult.OK)
-            {
-                // Optionally, you can update the list box here
-                UpdateListBox();
+                UpdateGUI();
             }
         }
 
 
+        private void btnDel_Click(object sender, EventArgs e)
+        {
+            if (listRecipes.SelectedItem != null)
+            {
+                int index = listRecipes.SelectedIndex;
+                recipeManager.DeleteElement(index);
+                UpdateGUI();
+            }
+        }
+
+
+        private void btnClear_Click(object sender, EventArgs e)
+        {
+            ClearForm();
+        }
 
 
 
-        private void UpdateListBox()
+        private void UpdateGUI()
         {
             listRecipes.Items.Clear();
-            int numOfRecipes = recipeManager.NumOfRecipes();
-
-            for (int i = 0; i < numOfRecipes; i++)
+           
+            foreach (string recipeSummary in recipeManager.RecipeListToString())
             {
-                Recipe recipe = recipeManager.GetRecipeAt(i);
-                if (recipe != null)
-                {
-                    // Format the recipe information as a string
-                    string recipeInfo = recipe.Name.PadRight(35) + recipe.Category.ToString().PadRight(25) + recipe.IngredientCount().ToString();
-                    // Add the recipe information to the list box
-                    listRecipes.Items.Add(recipeInfo);
-                }
-            }
-
-        }
-
-
-
-
-        private void listRecipes_DoubleClick(object sender, EventArgs e)
-        {
-            if (listRecipes.SelectedItems.Count > 0)
-            {
-                Recipe selectedRecipe = (Recipe)listRecipes.SelectedItems[0];
-
-                // Construct the details string
-                string ingredients = string.Join(", ", selectedRecipe.GetIngredients());
-                string details = $"Name: {selectedRecipe.Name}\n" +
-                                 $"Category: {selectedRecipe.Category}\n" +
-                                 $"Ingredients: {ingredients}\n" +
-                                 $"Description: {selectedRecipe.Description}\n";
-
-                // Show the details in a message box
-                MessageBox.Show(details, "Cooking Instructions", MessageBoxButtons.OK);
+                listRecipes.Items.Add(recipeSummary);
             }
         }
 
-        private void listRecipes_SelectedIndexChanged(object sender, EventArgs e)
+
+        private void listRecipes_MouseDoubleClick(object sender, EventArgs e)
         {
+            ViewSelectedRecipeDetails();
 
         }
-        private void btnEditBegin_Click_1(object sender, EventArgs e)
+
+
+        private void ViewSelectedRecipeDetails()
         {
-            if (listRecipes.SelectedItems.Count > 0)
+            int selectedIndex = listRecipes.SelectedIndex;
+            if (selectedIndex != -1)
             {
-                // Get the index of the selected recipe in the list view
-                int selectedIndex = listRecipes.SelectedIndex;
+                Recipe selectedRecipe = recipeManager.GetRecipeAt(selectedIndex);
 
-                // Ensure the selected index is valid
-                if (selectedIndex >= 0 && selectedIndex < recipeManager.NumOfRecipes())
-                {
-                    // Get the selected recipe using its index
-                    Recipe selectedRecipe = recipeManager.GetRecipeAt(selectedIndex);
+                string ingredients = selectedRecipe.GetIngredientsAsString();
+                string description = selectedRecipe.Description;
 
-                    // Enable editing of name, instructions, and category
-                    textRecipeName.Enabled = true;
-                    textInstructions.Enabled = true;
-                    comboCategory.Enabled = true;
 
-                    // Set the current recipe to the selected recipe
-                    currRecipe = selectedRecipe;
-
-                    // Populate the text fields with the selected recipe's information
-                    textRecipeName.Text = currRecipe.Name;
-                    textInstructions.Text = currRecipe.Description;
-                    comboCategory.SelectedItem = currRecipe.Category;
-                }
-                else
-                {
-                    MessageBox.Show("Invalid selection.");
-                }
+                MessageBox.Show($"INGREDIENTS:\n {ingredients}\n\n {description}", "Cooking Instructions", MessageBoxButtons.OK);
             }
             else
             {
-                MessageBox.Show("Please select a recipe to edit.");
+                MessageBox.Show("Please select a recipe to view its details.", "Selection Required", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
 
-        private void btnEditFinish_Click_1(object sender, EventArgs e)
+
+
+        private void ClearForm()
         {
-            if (currRecipe != null)
-            {
-                // Disable editing of name, instructions, and category
-                textRecipeName.Enabled = false;
-                textInstructions.Enabled = false;
-                comboCategory.Enabled = false;
-
-                string editedName = textRecipeName.Text;
-                string editedDescription = textInstructions.Text;
-                FoodCategory editedCategory = (FoodCategory)comboCategory.SelectedItem;
-
-                if (string.IsNullOrWhiteSpace(editedName) || string.IsNullOrWhiteSpace(editedDescription))
-                {
-                    MessageBox.Show("Name and Description cannot be empty.");
-                    return;
-                }
-
-                currRecipe.Name = editedName;
-                currRecipe.Description = editedDescription;
-                currRecipe.Category = editedCategory;
-
-                // Find the index of the current recipe in the recipe list
-                int selectedIndex = -1;
-                for (int i = 0; i < recipeManager.NumOfRecipes(); i++)
-                {
-                    if (recipeManager.GetRecipeAt(i) == currRecipe)
-                    {
-                        selectedIndex = i;
-                        break;
-                    }
-                }
-
-                if (selectedIndex != -1)
-                {
-                    if (recipeManager.EditRecipe(selectedIndex, currRecipe))
-                    {
-                        UpdateListBox();
-                        MessageBox.Show("Recipe updated successfully.");
-                    }
-                    else
-                    {
-                        MessageBox.Show("Error in updating the recipe.");
-                    }
-                }
-                else
-                {
-                    MessageBox.Show("Error: Recipe not found in the list.");
-                }
-            }
-            else
-            {
-                MessageBox.Show("Please select a recipe to edit.");
-            }
-            UpdateGUI();
-        }
-
-        private void btnDel_Click_1(object sender, EventArgs e)
-        {
-            if (listRecipes.SelectedItems.Count > 0)
-            {
-                // Get the index of the selected recipe in the list view
-                int selectedIndex = listRecipes.SelectedIndex;
-
-                // Ensure the selected index is valid
-                if (selectedIndex >= 0 && selectedIndex < recipeManager.NumOfRecipes())
-                {
-                    if (recipeManager.RemoveRecipeAt(selectedIndex))
-                    {
-                        UpdateListBox();
-                        MessageBox.Show("Recipe deleted successfully.");
-                    }
-                    else
-                    {
-                        MessageBox.Show("Error in deleting recipe.");
-                    }
-                }
-                else
-                {
-                    MessageBox.Show("Error: Recipe not found in the list.");
-                }
-            }
-            else
-            {
-                MessageBox.Show("Please select a recipe to delete.");
-            }
-            UpdateGUI();
-        }
-
-
-
-        private void btnClear_Click_1(object sender, EventArgs e)
-        {
-            listRecipes.ClearSelected();
-            //currRecipe = null;
             textRecipeName.Clear();
             textInstructions.Clear();
-            comboCategory.SelectedIndex = 0;
-            UpdateGUI();
+            comboCategory.SelectedIndex = -1;
+            listRecipes.ClearSelected();
         }
 
-
-
-        // Add other event handlers as needed...
+        private void FormMain_Load(object sender, EventArgs e)
+        {
+           
+        }
     }
 }

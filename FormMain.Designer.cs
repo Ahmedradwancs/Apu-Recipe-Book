@@ -163,7 +163,7 @@
             btnEditBegin.TabIndex = 5;
             btnEditBegin.Text = "Edit-Begin";
             btnEditBegin.UseVisualStyleBackColor = false;
-            btnEditBegin.Click += btnEditBegin_Click_1;
+            btnEditBegin.Click += btnEditBegin_Click;
             // 
             // btnEditFInish
             // 
@@ -174,7 +174,7 @@
             btnEditFInish.TabIndex = 6;
             btnEditFInish.Text = "Edit-Finish";
             btnEditFInish.UseVisualStyleBackColor = false;
-            btnEditFInish.Click += btnEditFinish_Click_1;
+            btnEditFInish.Click += btnEditFinish_Click;
             // 
             // btnDel
             // 
@@ -185,7 +185,7 @@
             btnDel.TabIndex = 7;
             btnDel.Text = "Delete";
             btnDel.UseVisualStyleBackColor = false;
-            btnDel.Click += btnDel_Click_1;
+            btnDel.Click += btnDel_Click;
             // 
             // btnClear
             // 
@@ -196,7 +196,7 @@
             btnClear.TabIndex = 8;
             btnClear.Text = "Clear Selection";
             btnClear.UseVisualStyleBackColor = false;
-            btnClear.Click += btnClear_Click_1;
+            btnClear.Click += btnClear_Click;
             // 
             // textEnd
             // 
@@ -228,8 +228,10 @@
             Controls.Add(label4);
             Controls.Add(label3);
             Controls.Add(groupBox1);
+            Font = new Font("Segoe UI", 9F);
             Name = "FormMain";
             Text = "Apu Recipe book";
+            Load += FormMain_Load;
             groupBox1.ResumeLayout(false);
             groupBox1.PerformLayout();
             ResumeLayout(false);
